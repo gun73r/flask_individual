@@ -8,6 +8,7 @@ authors = ["gun73r <alexander.kulakousky@gmail.com>"]
 python = "^3.8"
 Flask = "^1.1.2"
 pymongo = "^3.11.3"
+marshmallow = "^3.10.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
