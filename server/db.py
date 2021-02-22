@@ -1,21 +1,32 @@
 import logging
+import os
 from typing import List
 
+from dotenv import load_dotenv
 from pymongo import DESCENDING, MongoClient
 
 from .models import Agreement
+from .utils import get_config
 
 _LOGGER = logging.getLogger(__name__)
 
-_DB_NAME = 'Zesla'
+load_dotenv()
+_CONNECTION_STRING = os.environ.get('MONGO_CONNECTION')
 
-_COMPANY_COLLECTION_NAME = 'company'
-_USER_COLLECTION_NAME = 'user'
-_AGREEMENT_COLLECTION_NAME = 'agreement'
-_APPROVAL_COLLECTION_NAME = 'approval'
-_SIGNATURE_COLLECTION_NAME = 'signature'
+_CONFIG = get_config()
 
-_CLIENT = MongoClient()
+_DB_NAME = _CONFIG.get('db_name', 'Zesla')
+
+_COLLECTION_NAMES = _CONFIG.get('collection_names', {})
+
+_COMPANY_COLLECTION_NAME = _COLLECTION_NAMES.get('company', 'company')
+_USER_COLLECTION_NAME = _COLLECTION_NAMES.get('user', 'user')
+_AGREEMENT_COLLECTION_NAME = _COLLECTION_NAMES.get('agreement', 'agreement')
+_APPROVAL_COLLECTION_NAME = _COLLECTION_NAMES.get('approval', 'approval')
+_SIGNATURE_COLLECTION_NAME = _COLLECTION_NAMES.get('signature', 'signature')
+
+
+_CLIENT = MongoClient(_CONNECTION_STRING)
 _DB = _CLIENT[_DB_NAME]
 
 _COMPANIES = _DB[_COMPANY_COLLECTION_NAME]
