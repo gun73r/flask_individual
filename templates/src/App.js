@@ -7,7 +7,10 @@ import {
 } from 'react-router-dom';
 import AgreementList from './components/agreement-list/AgreementList';
 import Header from './components/header/Header';
-import Editor from './components/Editor/Editor';
+import Editor from './components/editor/Editor';
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:5000');
 
 function App() {
     return (
@@ -25,7 +28,7 @@ function App() {
                         <AgreementList />
                     </Route>
                     <Route path="/agreement/:agreementId">
-                        <Editor />
+                        <Editor socket={socket}/>
                     </Route>
                 </Switch>
             </Router>
