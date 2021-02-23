@@ -48,7 +48,7 @@ pre-commit run -a # to run all pre-commit tests
 ```shell script
 pyenv global 3.8.5
 poetry install --no-dev
-poetry run gunicorn -c ./configs/service.conf.py "run:create_app"
+poetry run gunicorn --worker-class eventlet -c ./configs/service.conf.py "run:create_app()[0]"
 ```
 * React
 ```shell script
