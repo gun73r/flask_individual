@@ -21,18 +21,22 @@ def get_users_by_company_id(company_id: str) -> List[User]:
 
 def get_user_by_id(user_id: str) -> User:
     doc = USERS.find_one({'id': user_id}, NO_MONGO_ID)
+    if not doc:
+        raise TypeError
     return User.from_document(doc)
 
 
 def get_user_by_username(username: str) -> User:
     doc = USERS.find_one({'username': username}, NO_MONGO_ID)
+    if not doc:
+        raise TypeError
     return User.from_document(doc)
 
 
 def update_user(user: User) -> bool:
     if not _user_exists(user.id):
         return False
-    USERS.find_one_and_replace({'id': user.id}, user)
+    USERS.find_one_and_replace({'id': user.id}, user.to_document())
     return True
 
 

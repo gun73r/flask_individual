@@ -51,7 +51,7 @@ class AuthApi(MethodView):
                 auth_token = encode_auth_token(user.id)
                 if auth_token:
                     response = json.dumps(
-                        {'status': 'success', 'auth_token': auth_token}
+                        {'status': SUCCESS_STATUS, 'auth_token': auth_token}
                     )
                     return Response(response=response, status=200)
                 response = json.dumps({'status': UNKNOWN_ERROR_STATUS})

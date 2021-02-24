@@ -21,13 +21,15 @@ def get_agreements_by_company_id(company_id: str) -> List[Agreement]:
 
 def get_agreement_by_id(agreement_id: str) -> Agreement:
     doc = AGREEMENTS.find_one({'id': agreement_id})
+    if not doc:
+        raise TypeError
     return Agreement.from_document(doc)
 
 
 def update_agreement(agreement: Agreement) -> bool:
     if not _agreement_exists(agreement.id):
         return False
-    AGREEMENTS.find_one_and_replace({'id': agreement.id}, agreement)
+    AGREEMENTS.find_one_and_replace({'id': agreement.id}, agreement.to_document())
     return True
 
 

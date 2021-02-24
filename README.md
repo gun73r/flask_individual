@@ -79,3 +79,9 @@ collection_names:
   approval: approval
   signature: signature
 ```
+
+### .env
+```ini
+SECRET_KEY=<your_secret_key>
+MONGO_CONNECTION=<mongodb_connection_string>
+```
