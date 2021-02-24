@@ -20,11 +20,7 @@ _USER_SCHEMA = UserSchema()
 
 class AuthApi(MethodView):
     def get(self) -> Response:
-        auth_header = request.headers.get('Authorization')
-        if auth_header:
-            auth_token = auth_header.split(' ')[1]
-        else:
-            auth_token = ''
+        auth_token = request.headers.get('Authorization')
         if auth_token:
             try:
                 user_id = decode_auth_token(auth_token)
