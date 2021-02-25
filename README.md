@@ -10,8 +10,8 @@ Online document editor
 ```shell script
 sudo apt update -y
 sudo apt install -y make build-essential libssl-dev zlib1g-dev \
-libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev\
-libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl\
+libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev \
+libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl \
 git
 git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
@@ -78,4 +78,10 @@ collection_names:
   agreement: agreement
   approval: approval
   signature: signature
+```
+
+### .env
+```ini
+SECRET_KEY=<your_secret_key>
+MONGO_CONNECTION=<mongodb_connection_string>
 ```

@@ -1,0 +1,5 @@
+SUCCESS_STATUS = 'success'
+INVALID_TOKEN_STATUS = 'invalid token'
+EXPIRED_TOKEN_STATUS = 'expired token'
+NOT_EXISTS_STATUS = 'not exists'
+UNKNOWN_ERROR_STATUS = 'unknown error'

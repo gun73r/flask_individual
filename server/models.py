@@ -51,6 +51,7 @@ class Model(ABC):
 
 @dataclass
 class User(Model):
+    username: str
     full_name: str
     role: Role
     company_id: str
@@ -58,6 +59,7 @@ class User(Model):
 
     def to_document(self) -> Dict[str, Any]:
         return {
+            'username': self.username,
             'id': self.id,
             'full_name': self.full_name,
             'role': int(self.role),
@@ -67,10 +69,17 @@ class User(Model):
     @classmethod
     def from_document(cls, document: Dict[str, Any]) -> User:
         _id = document['id']
+        username = document['username']
         full_name = document['full_name']
         role = Role(document['role'])
         company_id = document['company_id']
-        return cls(id=_id, full_name=full_name, role=role, company_id=company_id)
+        return cls(
+            id=_id,
+            username=username,
+            full_name=full_name,
+            role=role,
+            company_id=company_id,
+        )
 
 
 @dataclass

@@ -17,6 +17,7 @@ repos:
     hooks:
       - id: mypy
         args: [--disallow-untyped-defs, --ignore-missing-imports]
+        additional_dependencies: [pymongo-stubs]
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: '11ef33bbdec6342f4f59063e2ab94e827410467c'
     hooks:
