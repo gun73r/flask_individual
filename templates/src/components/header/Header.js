@@ -1,31 +1,18 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import {Drawer, CssBaseline, AppBar, Toolbar, List, Typography, Divider, IconButton, ListItem,
+    ListItemIcon, ListItemText, Dialog, DialogActions, DialogContent, DialogContentText,
+    DialogTitle, Button, TextField } from '@material-ui/core';
+import {Link} from 'react-router-dom';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import ArchiveIcon from '@material-ui/icons/Archive';
 import PeopleIcon from '@material-ui/icons/People';
-import {Link} from 'react-router-dom';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const drawerWidth = 240;
@@ -117,7 +104,7 @@ const listItems = (
             </ListItemIcon>
             <ListItemText primary="Agreements" />
         </ListItem>
-        <ListItem button component={Link} to="archive">
+        <ListItem button component={Link} to="/archive">
             <ListItemIcon>
                 <ArchiveIcon />
             </ListItemIcon>
@@ -129,14 +116,22 @@ const listItems = (
             </ListItemIcon>
             <ListItemText primary="Company" />
         </ListItem>
+        <ListItem button component={Link} onClick={() => localStorage.removeItem('auth_token')} to='/login'>
+            <ListItemIcon>
+                <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+        </ListItem>
     </div>
 );
 
 
 export default function Header() {
+    const history = useHistory();
     const classes = useStyles();
     const [openDrawer, setOpenDrawer] = useState(true);
     const [openModal, setOpenModal] = useState(false);
+    const [agreementName, setAgreementName] = useState('');
     const handleDrawerOpen = () => {
         setOpenDrawer(true);
     };
@@ -146,14 +141,47 @@ export default function Header() {
     const handleModalOpen = () => {
         setOpenModal(true);
     };
-    const handleModalClose = () => {
+    const handleModalSuccess = () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        console.log(typeof(user));
+        console.log(user);
+        fetch('http://localhost:5000/api/agreements', {
+            method: 'POST',
+            headers: {
+                'authorization': localStorage.getItem('auth_token'),
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: agreementName,
+                company_ids: [user.company_id],
+            })
+        })
+            .then(response => {
+                console.log(response);
+                return response.json();
+            })
+            .then(json => {
+                console.log(json);
+                history.push(`/agreement/${json.id}`);
+            });
+        
+        setOpenModal(false);
+    };
+
+    const handleModalFailOrClose = () => {
         setOpenModal(false);
     };
 
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <CreateAgreementDialog open={openModal} handleClose={handleModalClose} />
+            <AgreementDialog 
+                open={openModal}
+                handleSucces={handleModalSuccess}
+                handleFail={handleModalFailOrClose}
+                handleClose={handleModalFailOrClose} 
+                agreementName={agreementName}
+                setAgreementName={setAgreementName}/>
             <AppBar position="absolute" className={clsx(classes.appBar, openDrawer && classes.appBarShift)}>
                 <Toolbar className={classes.toolbar}>
                     <IconButton
@@ -195,34 +223,40 @@ export default function Header() {
         </div>
     );
 }
-
-CreateAgreementDialog.propTypes = {
+AgreementDialog.propTypes = {
     open: PropTypes.bool,
+    handleSucces: PropTypes.func,
+    handleFail: PropTypes.func,
     handleClose: PropTypes.func,
+    setAgreementName: PropTypes.func,
+    agreementName: PropTypes.string
 };
 
-function CreateAgreementDialog({open, handleClose}) {
-    return <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Create Agreement</DialogTitle>
-        <DialogContent>
-            <DialogContentText>
-        To create new agreement you need to enter its name
-            </DialogContentText>
-            <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Agreement Name"
-                fullWidth
-            />
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={handleClose} color="primary">
-                Cancel
-            </Button>
-            <Button onClick={handleClose} color="primary">
-                Create
-            </Button>
-        </DialogActions>
-    </Dialog>;
+function AgreementDialog({open, handleSucces, handleFail, handleClose, agreementName, setAgreementName}) {
+    return (
+        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Create Agreement</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    To create new agreement you need to enter its name
+                </DialogContentText>
+                <TextField
+                    value={agreementName}
+                    onChange={event => setAgreementName(event.target.value)}
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Agreement Name"
+                    fullWidth
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleFail} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={handleSucces} color="primary">
+                   Create
+                </Button>
+            </DialogActions>
+        </Dialog>);
 }
