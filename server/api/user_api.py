@@ -20,12 +20,12 @@ _USER_SCHEMA = UserSchema()
 
 class UserApi(MethodView):
     def get(self) -> Response:
-        if not request.data:
+        if not request.args:
             return Response(status=400)
-        json_data = json.loads(request.data)
-        if 'id' in json_data:
+        params = dict(request.args)
+        if 'id' in params:
             try:
-                user = get_user_by_id(json_data['id'])
+                user = get_user_by_id(params['id'])
                 user_json = _USER_SCHEMA.dumps(user)
                 return Response(response=user_json, status=200)
             except TypeError:
@@ -33,8 +33,8 @@ class UserApi(MethodView):
             except KeyError:
                 _LOGGER.exception('Document don\'t have one or more fields')
                 return Response(status=415)
-        if 'company_id' in json_data:
-            users = get_users_by_company_id(json_data['company_id'])
+        if 'company_id' in params:
+            users = get_users_by_company_id(params['company_id'])
             users_json = _USER_SCHEMA.dumps(users, many=True)
             return Response(response=users_json, status=200)
         return Response(status=400)

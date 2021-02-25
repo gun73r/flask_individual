@@ -20,12 +20,12 @@ _AGREEMENT_SCHEMA = AgreementSchema()
 
 class AgreementApi(MethodView):
     def get(self) -> Response:
-        if not request.data:
+        if not request.args:
             return Response(status=400)
-        json_data = json.loads(request.data)
-        if 'id' in json_data:
+        params = dict(request.args)
+        if 'id' in params:
             try:
-                agreement = get_agreement_by_id(json_data['id'])
+                agreement = get_agreement_by_id(params['id'])
                 agreement_json = _AGREEMENT_SCHEMA.dumps(agreement)
                 return Response(response=agreement_json, status=200)
             except TypeError:
@@ -33,8 +33,8 @@ class AgreementApi(MethodView):
             except KeyError:
                 _LOGGER.exception('Document don\'t have one or more fields')
                 return Response(status=415)
-        if 'company_id' in json_data:
-            agreements = get_agreements_by_company_id(json_data['company_id'])
+        if 'company_id' in params:
+            agreements = get_agreements_by_company_id(params['company_id'])
             agreements_json = _AGREEMENT_SCHEMA.dumps(agreements, many=True)
             return Response(response=agreements_json, status=200)
         return Response(status=400)

@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List
 
 from ..models import Agreement
 from ._db import AGREEMENTS
@@ -24,6 +24,13 @@ def get_agreement_by_id(agreement_id: str) -> Agreement:
     if not doc:
         raise TypeError
     return Agreement.from_document(doc)
+
+
+def add_ots_to_agreement(agreement_id: str, ots: List[Dict[str, Any]]) -> bool:
+    if not _agreement_exists(agreement_id):
+        return False
+    AGREEMENTS.find_one_and_update({'id': agreement_id}, {'$push': {'ots': ots}})
+    return True
 
 
 def update_agreement(agreement: Agreement) -> bool:
