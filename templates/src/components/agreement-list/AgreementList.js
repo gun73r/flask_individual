@@ -1,25 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Container, Grid, Typography, Box, Link } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import { get } from '../../api';
 
 
 export default function AgreementList() {
     const [agreements, setAgreements] = useState([]);
+    const history = useHistory();
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
-        console.log(user);
-        axios.get(`http://localhost:5000/api/agreements?company_id=${user.company_id}`,{
-            auth: localStorage.getItem('auth_token'),
-            
-        })
-            .then(response => response.data)
-            .then(json => setAgreements(json));
+
+        get('/api/agreements', { company_id: user.company_id })
+            .then(response => {
+                setAgreements(response.data);
+            })
+            .catch(err => {
+                switch (err.response.status) {
+                case 401: {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user');
+                    history.push('/login');
+                    break;
+                }
+                }
+            });
     }, []);
     return (
         <Container >
-            {agreements.map(el => <Agreement key={el.id} agreementId={el.id} name={el.name} companies={el.company_ids} stage={el.status} />)}
+            { agreements ?
+                agreements.map(el => <Agreement key={el.id} agreementId={el.id} name={el.name} companyIds={el.company_ids} stage={el.status} />)
+                : <Typography variant="subtitle1">
+                    Your company don&apost have any Agreements yet.
+                </Typography>
+            }
         </Container>
     );
 }
@@ -27,7 +41,7 @@ export default function AgreementList() {
 Agreement.propTypes = {
     agreementId: PropTypes.string,
     name: PropTypes.string,
-    companies: PropTypes.array,
+    companyIds: PropTypes.array,
     stage: PropTypes.number,
 };
 
@@ -40,7 +54,25 @@ const stages = {
     5: 'Archived'
 };
 
-function Agreement({ agreementId, name, companies, stage }) {
+function Agreement({ agreementId, name, companyIds, stage }) {
+
+    const history = useHistory();
+    const [companies, setCompanies] = useState([]);
+    useEffect(() => {
+        setCompanies([]);
+        companyIds.map(id => {
+            return get('/api/companies', { id })
+                .then(response => setCompanies(old => [...old, response.data]))
+                .catch(err => {
+                    if (err.response.status == 401) {
+                        localStorage.removeItem('auth_token');
+                        localStorage.removeItem('user');
+                        history.push('/login');
+                    }
+                });
+        });
+        console.log(companies);
+    }, []);
     return (
         <Box mb={2}>
             <Link underline="none" component={RouterLink} to={`/agreement/${agreementId}`}>
@@ -48,17 +80,24 @@ function Agreement({ agreementId, name, companies, stage }) {
                     <Typography component="h5" variant="h5">
                         {name}
                     </Typography>
-                    <Grid container spacing={2}>
-                        {companies.map(el => (
-                            <Grid key={el} item>
-                                <Typography variant="subtitle1" color="textSecondary">
-                                    {el}
-                                </Typography>
-                            </Grid>
-                        ))}
+                    <Grid container spacing={2}
+                        alignContent="center"
+                        justify="center"
+                        alignItems="center">
+                        {companies.map((el, idx) => {
+                            if(el !== undefined) {
+                                return <Grid key={el.id} item>
+                                    <Typography variant="subtitle1" color="textSecondary">
+                                        {el.name}
+                                    </Typography>
+                                </Grid>;
+                            }
+                            return <div key={idx}></div>;
+                        })}
                     </Grid>
+
                     <Typography variant="h6" component="h6">
-                    Status: {stages[stage]}
+                        Status: {stages[stage]}
                     </Typography>
 
                 </Card>

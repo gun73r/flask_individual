@@ -10,6 +10,7 @@ import Header from './components/header/Header';
 import Editor from './components/editor/Editor';
 import Login from './components/login/Login';
 import PrivateRoute from './components/private-route/PrivateRoute';
+import Company from './components/company/Company';
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5000');
@@ -22,7 +23,7 @@ function App() {
                     <Route path="/login" component={Login} />
                     <div>
                         <Header/>
-                        <PrivateRoute path="/company" component={AgreementList} />
+                        <PrivateRoute path="/company" component={Company} />
                         <PrivateRoute path="/agreements" component={AgreementList} />
                         <PrivateRoute path="/archive" component={AgreementList} />
                         <PrivateRoute path="/agreement/:agreementId" component={Editor}  socket={socket} />

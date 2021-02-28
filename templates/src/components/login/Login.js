@@ -8,6 +8,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { get, post } from '../../api';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,30 +37,16 @@ export default function Login() {
     const [error, setError] = useState(false);
     const handleSubmit = (event) => {
         event.preventDefault();
-        fetch('http://localhost:5000/api/auth', {
-            'method': 'POST',
-            'headers': {
-                'content-type': 'application/json',
-                'accept': 'application/json',
-            },
-            'body': JSON.stringify({username})
-        })
-            .then(response => response.json())
-            .then(json => {
-                if(json.status === 'success') {
-                    localStorage.setItem('auth_token', json.auth_token);
-                    fetch('http://localhost:5000/api/auth', {
-                        'method': 'GET',
-                        headers: {
-                            'content-type': 'application/json',
-                            'accept': 'application/json',
-                            'authorization': json.auth_token
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(json => {
-                            console.log(json.data);
-                            localStorage.setItem('user', json.data);
+        post('/api/auth', { username })
+            .then(response => {
+                const data = response.data;
+                if(data.status === 'success') {
+                    localStorage.setItem('auth_token', data.auth_token);
+                    get('/api/auth', {})
+                        .then(response => {
+                            const data = response.data;
+                            console.log(data.data);
+                            localStorage.setItem('user', data.data);
                             history.push('/agreements');
                         });
                 }

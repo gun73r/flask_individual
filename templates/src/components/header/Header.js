@@ -14,6 +14,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { post } from '../../api';
 
 const drawerWidth = 240;
 
@@ -129,6 +130,7 @@ const listItems = (
 export default function Header() {
     const history = useHistory();
     const classes = useStyles();
+    const user = JSON.parse(localStorage.getItem('user'));
     const [openDrawer, setOpenDrawer] = useState(true);
     const [openModal, setOpenModal] = useState(false);
     const [agreementName, setAgreementName] = useState('');
@@ -143,26 +145,23 @@ export default function Header() {
     };
     const handleModalSuccess = () => {
         const user = JSON.parse(localStorage.getItem('user'));
-        console.log(typeof(user));
-        console.log(user);
-        fetch('http://localhost:5000/api/agreements', {
-            method: 'POST',
-            headers: {
-                'authorization': localStorage.getItem('auth_token'),
-                'content-type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: agreementName,
-                company_ids: [user.company_id],
-            })
+        post('/api/agreements', {
+            name: agreementName,
+            company_ids: [user.company_id],
         })
             .then(response => {
-                console.log(response);
-                return response.json();
-            })
-            .then(json => {
-                console.log(json);
-                history.push(`/agreement/${json.id}`);
+                switch(response.status) {
+                case 201: {                        
+                    history.push(`/agreement/${response.data.id}`);
+                    break;
+                }
+                case 401: {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user');
+                    history.push('/login');
+                    break;
+                }
+                }
             });
         
         setOpenModal(false);
@@ -196,12 +195,15 @@ export default function Header() {
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         Zesla
                     </Typography>
-                    <Button
-                        color="inherit"
-                        className={classes.button}
-                        startIcon={<NoteAddIcon />}
-                        onClick={handleModalOpen}
-                    >Create Document</Button>
+                    {user.company_id == '0'?
+                        <Button
+                            color="inherit"
+                            className={classes.button}
+                            startIcon={<NoteAddIcon />}
+                            onClick={handleModalOpen}
+                        >Create Document</Button>
+                        : <div></div>
+                    }
                 </Toolbar>
             </AppBar>
             <Drawer

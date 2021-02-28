@@ -3,10 +3,10 @@ import { Container, Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import { v4 as uuid4 } from 'uuid';
 import ReactQuill from 'react-quill';
-import axios from 'axios';
 import Delta from 'quill-delta';
 import 'react-quill/dist/quill.snow.css';
 import propType from 'prop-types';
+import {get} from '../../api';
 
 Editor.propTypes = {
     socket: propType.object
@@ -37,20 +37,30 @@ export default function Editor({ socket }) {
     const [name, setName] = useState('');
     useEffect(() => {
         let data;
-        axios.get(`http://localhost:5000/api/agreements?id=${agreementId}`, {
-            auth: localStorage.getItem('auth_token')
+        get('/api/agreements', {
+            id: agreementId
         })
-            .then(response => response.data)
-            .then(json => {
-                console.log(json);
-                data = new Delta();
-                if(json.ots) {
-                    for(const ot of json.ots) {
-                        data = data.compose(new Delta(ot));
+            .then(response => {
+                const respData = response.data;
+                switch(response.status) {
+                case 200: {
+                    setName(respData.name);
+                    data = new Delta();
+                    if(respData.ots) {
+                        for(const ot of respData.ots) {
+                            data = data.compose(new Delta(ot));
+                        }
+                        setContent(data);
                     }
-                    setContent(data);
+                    break;
                 }
-                setName(json.name);
+                case 401: {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user');
+                    history.push('/login');
+                    break;
+                }
+                }
             });
 
         socket.connect();
@@ -63,7 +73,10 @@ export default function Editor({ socket }) {
             }
         });
 
-        return () => socket.disconnect();
+        return () => {
+            socket.emit('leave', { agreementId });
+            socket.disconnect();
+        };
     }, []);
     return (
         <Container>
