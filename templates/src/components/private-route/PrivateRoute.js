@@ -13,15 +13,15 @@ export default function PrivateRoute({ component: Component, ...rest }) {
     return (
         <Route
             {...rest}
-            render={props => 
+            render={props =>
                 token ? (
                     <Component {...props} {...rest} />
                 ) : (
 
                     <Redirect to="/login"/>
                 )
-            }               
-            
+            }
+
         />
     );
 }

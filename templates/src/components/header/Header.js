@@ -151,7 +151,7 @@ export default function Header() {
         })
             .then(response => {
                 switch(response.status) {
-                case 201: {                        
+                case 201: {
                     history.push(`/agreement/${response.data.id}`);
                     break;
                 }
@@ -163,7 +163,7 @@ export default function Header() {
                 }
                 }
             });
-        
+
         setOpenModal(false);
     };
 
@@ -174,11 +174,11 @@ export default function Header() {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <AgreementDialog 
+            <AgreementDialog
                 open={openModal}
                 handleSucces={handleModalSuccess}
                 handleFail={handleModalFailOrClose}
-                handleClose={handleModalFailOrClose} 
+                handleClose={handleModalFailOrClose}
                 agreementName={agreementName}
                 setAgreementName={setAgreementName}/>
             <AppBar position="absolute" className={clsx(classes.appBar, openDrawer && classes.appBarShift)}>
