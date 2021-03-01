@@ -6,7 +6,7 @@ import ReactQuill from 'react-quill';
 import Delta from 'quill-delta';
 import 'react-quill/dist/quill.snow.css';
 import propType from 'prop-types';
-import {get} from '../../api';
+import { get } from '../../api';
 
 Editor.propTypes = {
     socket: propType.object
@@ -35,6 +35,8 @@ export default function Editor({ socket }) {
     const id = uuid4();
     const [content, setContent] = useState(new Delta());
     const [name, setName] = useState('');
+    let ref = null;
+    let selection;
     useEffect(() => {
         let data;
         get('/api/agreements', {
@@ -42,12 +44,12 @@ export default function Editor({ socket }) {
         })
             .then(response => {
                 const respData = response.data;
-                switch(response.status) {
+                switch (response.status) {
                 case 200: {
                     setName(respData.name);
                     data = new Delta();
-                    if(respData.ots) {
-                        for(const ot of respData.ots) {
+                    if (respData.ots) {
+                        for (const ot of respData.ots) {
                             data = data.compose(new Delta(ot));
                         }
                         setContent(data);
@@ -86,15 +88,42 @@ export default function Editor({ socket }) {
             <ReactQuill
                 modules={Editor.modules}
                 formats={Editor.formats}
+                ref={el => ref = el}
                 theme="snow"
                 value={content}
                 onChange={(data, delta, source) => {
-                    if (source === 'user') {
-                        console.log(delta);
+                    switch (source) {
+                    case 'api': {
+                        if (selection) {
+                            const ops = delta.ops;
+                            for (const op of ops) {
+                                if ('insert' in op) {
+                                    selection.index += op['insert'].length;
+                                }
+                                if ('delete' in op) {
+                                    selection.index -= op['delete'];
+                                }
+                            }
+                            if (ref) {
+                                ref.editor.setSelection(selection);
+                            }
+                        }
+                        break;
+                    }
+                    case 'user': {
                         socket.emit('change', { agreementId, id, ots: delta });
+                        break;
+                    }
+
                     }
                 }
                 }
+                onChangeSelection={(range, source) => {
+                    if (source == 'user') {
+                        selection = range;
+                        console.log(selection);
+                    }
+                }}
             />
         </Container>
     );

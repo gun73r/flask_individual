@@ -71,7 +71,6 @@ function Agreement({ agreementId, name, companyIds, stage }) {
                     }
                 });
         });
-        console.log(companies);
     }, []);
     return (
         <Box mb={2}>

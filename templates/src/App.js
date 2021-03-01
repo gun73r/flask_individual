@@ -25,7 +25,7 @@ function App() {
                         <Header/>
                         <PrivateRoute path="/company" component={Company} />
                         <PrivateRoute path="/agreements" component={AgreementList} />
-                        <PrivateRoute path="/archive" component={AgreementList} />
+                        <PrivateRoute path="/invites" component={AgreementList} />
                         <PrivateRoute path="/agreement/:agreementId" component={Editor}  socket={socket} />
                     </div>
                 </Switch>

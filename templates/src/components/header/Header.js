@@ -9,7 +9,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
-import ArchiveIcon from '@material-ui/icons/Archive';
+import CheckIcon from '@material-ui/icons/Check';
 import PeopleIcon from '@material-ui/icons/People';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useHistory } from 'react-router-dom';
@@ -105,11 +105,11 @@ const listItems = (
             </ListItemIcon>
             <ListItemText primary="Agreements" />
         </ListItem>
-        <ListItem button component={Link} to="/archive">
+        <ListItem button component={Link} to="/invites">
             <ListItemIcon>
-                <ArchiveIcon />
+                <CheckIcon />
             </ListItemIcon>
-            <ListItemText primary="Archive" />
+            <ListItemText primary="Invites" />
         </ListItem>
         <ListItem button component={Link} to="/company">
             <ListItemIcon>
