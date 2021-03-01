@@ -164,6 +164,27 @@ class Signature(Model):
     @classmethod
     def from_document(cls, document: Dict[str, Any]) -> Signature:
         _id = document['id']
-        head_id = document['user_id']
+        head_id = document['head_id']
         agreement_id = document['agreement_id']
         return cls(id=_id, head_id=head_id, agreement_id=agreement_id)
+
+
+@dataclass
+class Invite(Model):
+    to_company_id: str
+    agreement_id: str
+    id: str = field(default_factory=_generate_uuid)
+
+    def to_document(self) -> Dict[str, Any]:
+        return {
+            'id': self.id,
+            'to_company_id': self.to_company_id,
+            'agreement_id': self.agreement_id,
+        }
+
+    @classmethod
+    def from_document(cls, document: Dict[str, Any]) -> Invite:
+        _id = document['id']
+        to_company_id = document['to_company_id']
+        agreement_id = document['agreement_id']
+        return cls(id=_id, to_company_id=to_company_id, agreement_id=agreement_id)
