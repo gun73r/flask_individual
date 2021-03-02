@@ -26,7 +26,9 @@ def get_agreement_by_id(agreement_id: str) -> Agreement:
     return Agreement.from_document(doc)
 
 
-def add_ots_to_agreement(agreement_id: str, operations: List[Dict[str, Any]]) -> bool:
+def add_operations_to_agreement(
+    agreement_id: str, operations: List[Dict[str, Any]]
+) -> bool:
     if not _agreement_exists(agreement_id):
         return False
     AGREEMENTS.find_one_and_update(

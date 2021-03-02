@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from flask_socketio import emit, join_room, leave_room
 
-from server.db.agreement import add_ots_to_agreement
+from server.db.agreement import add_operations_to_agreement
 
 _AGREEMENT_ID_KEY = 'agreementId'
 _USER_ID_KEY = 'id'
@@ -27,4 +27,4 @@ def agreement_change(data: Dict[str, Any]) -> None:
         {_OPERATIONS_KEY: operations, _USER_ID_KEY: data[_USER_ID_KEY]},
         room=agreement_id,
     )
-    add_ots_to_agreement(agreement_id, operations['ops'])
+    add_operations_to_agreement(agreement_id, operations['ops'])
