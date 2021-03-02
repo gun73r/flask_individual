@@ -13,9 +13,10 @@ _NOT_AUTHORIZED_STATUS_CODE = 401
 _BAD_REQUEST_STATUS_CODE = 400
 
 
-def check_authorization(
-    method: Callable[[Any], Response]
-) -> Callable[[MethodView], Response]:
+HTTPMethod = Callable[[MethodView], Response]
+
+
+def check_authorization(method: Callable[[Any], Response]) -> HTTPMethod:
     @wraps(method)
     def _wrapped_method(self: MethodView) -> Response:
         try:
@@ -37,10 +38,8 @@ def check_authorization(
 
 def requires_any_param(
     *args: Any,
-) -> Callable[[Callable[[MethodView], Response]], Callable[[MethodView], Response]]:
-    def decorator(
-        method: Callable[[MethodView], Response]
-    ) -> Callable[[MethodView], Response]:
+) -> Callable[[HTTPMethod], HTTPMethod]:
+    def decorator(method: HTTPMethod) -> HTTPMethod:
         @wraps(method)
         def _wrapped_method(self: MethodView) -> Response:
             if not request.args:

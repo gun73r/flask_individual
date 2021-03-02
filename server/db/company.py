@@ -20,7 +20,6 @@ def get_all_companies() -> List[Company]:
 
 
 def get_companies_by_name(name: str) -> List[Company]:
-    print()
     docs = COMPANIES.find({'name': {'$regex': f'.*{name}.*'}})
     results = [Company.from_document(doc) for doc in docs]
     return results
