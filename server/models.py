@@ -103,8 +103,8 @@ class Company(Model):
 @dataclass
 class Agreement(Model):
     name: str
-    text: str
     status: AgreementStatus = AgreementStatus.IN_PROCESS
+    operations: List[Dict[str, Any]] = field(default_factory=list)
     company_ids: List[str] = field(default_factory=list)
     id: str = field(default_factory=_generate_uuid)
 
@@ -112,7 +112,7 @@ class Agreement(Model):
         return {
             'id': self.id,
             'name': self.name,
-            'text': self.text,
+            'operations': self.operations,
             'status': int(self.status),
             'company_ids': self.company_ids,
         }
@@ -121,10 +121,16 @@ class Agreement(Model):
     def from_document(cls, document: Dict[str, Any]) -> Agreement:
         _id = document['id']
         name = document['name']
-        text = document['text']
+        operations = document['operations']
         status = AgreementStatus(document['status'])
         company_ids = document['company_ids']
-        return cls(id=_id, name=name, text=text, status=status, company_ids=company_ids)
+        return cls(
+            id=_id,
+            name=name,
+            operations=operations,
+            status=status,
+            company_ids=company_ids,
+        )
 
 
 @dataclass

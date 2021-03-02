@@ -1,8 +1,8 @@
-from typing import List
+from typing import Any, Dict, List
 
 from ..models import Agreement
-from ._db import AGREEMENTS
 from .constants import NO_MONGO_ID
+from .db import AGREEMENTS
 
 
 def _agreement_exists(agreement_id: str) -> bool:
@@ -24,6 +24,17 @@ def get_agreement_by_id(agreement_id: str) -> Agreement:
     if not doc:
         raise TypeError
     return Agreement.from_document(doc)
+
+
+def add_operations_to_agreement(
+    agreement_id: str, operations: List[Dict[str, Any]]
+) -> bool:
+    if not _agreement_exists(agreement_id):
+        return False
+    AGREEMENTS.find_one_and_update(
+        {'id': agreement_id}, {'$push': {'operations': operations}}
+    )
+    return True
 
 
 def update_agreement(agreement: Agreement) -> bool:
