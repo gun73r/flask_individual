@@ -7,7 +7,7 @@ from .models import Agreement, AgreementStatus, Role, User
 
 class AgreementSchema(Schema):
     class Meta:
-        fields = ('id', 'name', 'ots', 'status', 'company_ids')
+        fields = ('id', 'name', 'operations', 'status', 'company_ids')
 
     @post_dump
     def make_dict(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:

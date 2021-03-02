@@ -1,8 +1,8 @@
 from typing import List
 
 from ..models import User
-from ._db import USERS
 from .constants import NO_MONGO_ID
+from .db import USERS
 
 
 def _user_exists(user_id: str) -> bool:
