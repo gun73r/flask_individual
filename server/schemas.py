@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from marshmallow import Schema, post_dump, post_load
 
-from .models import Agreement, AgreementStatus, Company, Role, User
+from .models import Agreement, AgreementStatus, Company, Invite, Role, User
 
 
 class AgreementSchema(Schema):
@@ -39,6 +39,15 @@ class UserSchema(Schema):
         except KeyError:
             pass
         return User(**data)
+
+
+class InviteSchema(Schema):
+    class Meta:
+        fields = ('id', 'to_company_id', 'agreement_id')
+
+    @post_load
+    def make_agreement(self, data: Dict[str, Any], **kwargs: Any) -> Invite:
+        return Invite(**data)
 
 
 class CompanySchema(Schema):

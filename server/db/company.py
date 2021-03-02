@@ -1,8 +1,8 @@
 from typing import List
 
 from ..schemas import Company
-from ._db import COMPANIES
 from .constants import NO_MONGO_ID
+from .db import COMPANIES
 
 
 def _company_exists(company_id: str) -> bool:
