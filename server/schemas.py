@@ -2,12 +2,12 @@ from typing import Any, Dict
 
 from marshmallow import Schema, post_dump, post_load
 
-from .models import Agreement, AgreementStatus, Invite, Role, User
+from .models import Agreement, AgreementStatus, Company, Invite, Role, User
 
 
 class AgreementSchema(Schema):
     class Meta:
-        fields = ('id', 'name', 'text', 'status', 'company_ids')
+        fields = ('id', 'name', 'operations', 'status', 'company_ids')
 
     @post_dump
     def make_dict(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
@@ -48,3 +48,12 @@ class InviteSchema(Schema):
     @post_load
     def make_agreement(self, data: Dict[str, Any], **kwargs: Any) -> Invite:
         return Invite(**data)
+
+
+class CompanySchema(Schema):
+    class Meta:
+        fields = ('id', 'name')
+
+    @post_load
+    def make_company(self, data: Dict[str, Any], **kwargs: Any) -> Company:
+        return Company(**data)

@@ -1,8 +1,8 @@
 from typing import List
 
 from ..models import Invite
-from ._db import INVITES
 from .constants import NO_MONGO_ID
+from .db import INVITES
 
 
 def _invite_exists(invite_id: str) -> bool:
