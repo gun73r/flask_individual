@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -8,7 +8,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { get, post } from '../../api';
+import AuthService from '../../api/AuthSevice';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,19 +35,22 @@ export default function Login() {
     const classes = useStyles();
     const [username, setUsername] = useState('');
     const [error, setError] = useState(false);
+
+    const authService = new AuthService();
     const handleSubmit = (event) => {
         event.preventDefault();
-        post('/api/auth', { username })
+        authService.login({username})
             .then(response => {
                 const data = response.data;
                 if(data.status === 'success') {
                     localStorage.setItem('auth_token', data.auth_token);
-                    get('/api/auth', {})
+                    authService.get()
                         .then(response => {
-                            const data = response.data;
-                            console.log(data.data);
-                            localStorage.setItem('user', data.data);
-                            history.push('/agreements');
+                            if(response) {
+                                const data = response.data;
+                                localStorage.setItem('user', data.data);
+                                history.push('/agreements');
+                            }
                         });
                 }
                 else {
@@ -55,6 +58,8 @@ export default function Login() {
                 }
             });
     };
+
+    const onChange = useCallback(event => setUsername(event.target.value));
 
     return (
         <Container component="main" maxWidth="xs">
@@ -70,7 +75,7 @@ export default function Login() {
                     <TextField
                         error={error}
                         value={username}
-                        onChange={(event) => setUsername(event.target.value)}
+                        onChange={onChange}
                         variant="outlined"
                         margin="normal"
                         required

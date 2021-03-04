@@ -7,10 +7,11 @@ import {
 } from 'react-router-dom';
 import AgreementList from './components/agreement-list/AgreementList';
 import Header from './components/header/Header';
-import Editor from './components/editor/Editor';
+import Agreement from './components/Agreement';
 import Login from './components/login/Login';
 import PrivateRoute from './components/private-route/PrivateRoute';
 import Company from './components/company/Company';
+import InviteList from './components/invite-list/InviteList';
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5000');
@@ -25,8 +26,8 @@ function App() {
                         <Header/>
                         <PrivateRoute path="/company" component={Company} />
                         <PrivateRoute path="/agreements" component={AgreementList} />
-                        <PrivateRoute path="/invites" component={AgreementList} />
-                        <PrivateRoute path="/agreement/:agreementId" component={Editor}  socket={socket} />
+                        <PrivateRoute path="/invites" component={InviteList} />
+                        <PrivateRoute path="/agreement/:agreementId" component={Agreement}  socket={socket} />
                     </div>
                 </Switch>
             </Router>
