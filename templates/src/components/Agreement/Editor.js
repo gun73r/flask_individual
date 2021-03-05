@@ -48,6 +48,7 @@ export default function Editor({ socket, agreement }) {
         socket.on('patch', (obj) => {
             const operations = obj.operations;
             if (obj.id !== id) {
+                agreement.operations.push(operations);
                 data = data.compose(operations);
                 setContent(data);
             }
@@ -101,6 +102,7 @@ export default function Editor({ socket, agreement }) {
                 theme="snow"
                 value={content}
                 onChange={onChange}
+                readOnly={agreement.status > 2}
                 onChangeSelection={onChangeSelection}
             />
         </Container>

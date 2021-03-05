@@ -6,7 +6,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import { useHistory } from 'react-router-dom';
-import AgreementService from '../../api/AgreementService';
+import agreementService from '../../api/AgreementService';
 import MenuList from './MenuList';
 import AgreementDialog from './AgreenentDialog';
 
@@ -94,8 +94,6 @@ export default function Header() {
     const [openDrawer, setOpenDrawer] = useState(true);
     const [openModal, setOpenModal] = useState(false);
     const [agreementName, setAgreementName] = useState('');
-
-    const agreementService = new AgreementService();
     useEffect(() => {
         if (!(user)) {
             history.push('/login');

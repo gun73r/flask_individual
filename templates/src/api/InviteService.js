@@ -1,19 +1,20 @@
 import Api from './index';
 
-export default class InviteService {
+class InviteService {
     constructor() {
-        this.api = new Api();
-        this.path = '/api/invites';
+        this.api = new Api('/invites');
     }
 
     create(invite) {
-        return this.api.post(this.path, invite);
+        return this.api.post(invite);
     }
     delete(inviteObj, answer) {
         const invite = JSON.stringify(inviteObj);
-        return this.api.delete(this.path, {invite, answer});
+        return this.api.delete({invite, answer});
     }
     get(params) {
-        return this.api.get(this.path, params);
+        return this.api.get(params);
     }
 }
+
+export default new InviteService();

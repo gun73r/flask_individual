@@ -1,21 +1,22 @@
 import Api from './index';
 
-export default class AgreementService {
+class AgreementService {
     constructor() {
-        this.api = new Api();
-        this.path = '/api/agreements';
+        this.api = new Api('/agreements');
     }
 
     create(agreement) {
-        return this.api.post(this.path, agreement);
+        return this.api.post(agreement);
     }
     delete(id) {
-        return this.api.delete(this.path, {id});
+        return this.api.delete({id});
     }
     update(agreement) {
-        return this.api.put(this.path, agreement);
+        return this.api.put(agreement);
     }
     get(params) {
-        return this.api.get(this.path, params);
+        return this.api.get(params);
     }
 }
+
+export default new AgreementService();

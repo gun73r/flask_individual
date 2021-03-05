@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container, Typography } from '@material-ui/core';
-import UserService from '../../api/UserService';
+import userService from '../../api/UserService';
 import ErrorDialog from './ErrorDialog';
 import AddEmployeeDialog from './AddEmployeeDialog';
 import User from './User';
@@ -10,8 +10,6 @@ export default function Company() {
     const [openDialog, setOpenDialog] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
-
-    const userService = new UserService();
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -38,8 +36,7 @@ export default function Company() {
                 setOpen={setOpenDialog}
                 setUsers={setUsers}
                 user={user}
-                setOpenModal={setOpenModal}
-                userService={userService} />
+                setOpenModal={setOpenModal}/>
             {user.role == 0 ?
                 <Button
                     variant="contained"

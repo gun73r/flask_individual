@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
-import AgreementService from '../../api/AgreementService';
-import CompanyService from '../../api/CompanyService';
+import agreementService from '../../api/AgreementService';
+import companyService from '../../api/CompanyService';
+import inviteService from '../../api/InviteService';
 import {Box, Button, Card, Typography} from '@material-ui/core';
 
 Invite.propTypes = {
@@ -11,17 +12,12 @@ Invite.propTypes = {
     companyId: PropTypes.string,
     invites: PropTypes.array,
     setInvites: PropTypes.func,
-    inviteService: PropTypes.object
 };
 
-export default function Invite({ invite, agreementId, companyId, invites, setInvites, inviteService }) {
+export default function Invite({ invite, agreementId, companyId, invites, setInvites }) {
     const history = useHistory();
     const [company, setCompany] = useState({});
     const [agreement, setAgreement] = useState({});
-
-
-    const agreementService = new AgreementService();
-    const companyService = new CompanyService();
 
     useEffect(() => {
         companyService.get({

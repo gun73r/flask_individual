@@ -6,8 +6,10 @@ import Companies from './Companies';
 import { useParams } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { Container, Typography } from '@material-ui/core';
-import AgreementService from '../../api/AgreementService';
+import agreementService from '../../api/AgreementService';
 import 'react-tabs/style/react-tabs.css';
+import Stage from './Stage';
+import Chat from './Chat';
 
 Agreement.propTypes = {
     socket: PropTypes.object,
@@ -18,8 +20,6 @@ export default function Agreement({socket}) {
     const {agreementId} = useParams();
     const [tabIndex, setTabIndex] = useState(0);
     const [agreement, setAgreement] = useState({});
-
-    const agreementService = new AgreementService();
 
     useEffect(() => {
         const fetch = async () => {
@@ -40,7 +40,7 @@ export default function Agreement({socket}) {
                 <Typography component="h3" variant="h3">
                     Loading...
                 </Typography>
-                : <div>
+                : <React.Fragment>
                     <Typography component="h3" variant="h3">
                         {agreement.name}
                     </Typography>
@@ -48,6 +48,8 @@ export default function Agreement({socket}) {
                         <TabList>
                             <Tab>Editor</Tab>
                             <Tab>Companies</Tab>
+                            <Tab>Stage</Tab>
+                            <Tab>Chat</Tab>
                         </TabList>
                         <TabPanel>
                             <Editor socket={socket} agreement={agreement} history={history}/>
@@ -55,8 +57,14 @@ export default function Agreement({socket}) {
                         <TabPanel>
                             <Companies agreement={agreement} history={history}/>
                         </TabPanel>
+                        <TabPanel>
+                            <Stage agreement={agreement} history={history}/>
+                        </TabPanel>
+                        <TabPanel>
+                            <Chat agreementId={agreementId} companyIds={agreement.company_ids} socket={socket} history={history}/>
+                        </TabPanel>
                     </Tabs>
-                </div>
+                </React.Fragment>
             }
         </Container>
 

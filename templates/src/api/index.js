@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-const instance = axios.create({ baseURL: 'http://localhost:5000' });
+const instance = axios.create({ baseURL: 'http://localhost:5000/api' });
 
 
 export default class Api {
-    get(path, params) {
+    constructor(path) {
+        this.path = path;
+    }
+    get(params) {
         const auth = localStorage.getItem('auth_token');
-        const response = instance.get(path, {
+        const response = instance.get(this.path, {
             params,
             'headers': {
                 'authorization': auth
@@ -28,9 +31,9 @@ export default class Api {
         return response;
     }
 
-    post(path, data) {
+    post(data) {
         const auth = localStorage.getItem('auth_token');
-        const response = instance.post(path, data, {
+        const response = instance.post(this.path, data, {
             headers: {
                 'authorization': auth
             }
@@ -52,9 +55,9 @@ export default class Api {
         return response;
     }
 
-    put(path, data) {
+    put(data) {
         const auth = localStorage.getItem('auth_token');
-        const response = instance.put(path, data, {
+        const response = instance.put(this.path, data, {
             headers: {
                 'authorization': auth
             }
@@ -75,11 +78,12 @@ export default class Api {
         return response;
     }
 
-    delete(path, data) {
+    delete(data) {
         const auth = localStorage.getItem('auth_token');
-        const response = instance.put(path, data, {
+        const response = instance.delete(this.path, {data,
             headers: {
-                'authorization': auth
+                'authorization': auth,
+
             }
         })
             .then(result => {
@@ -89,6 +93,7 @@ export default class Api {
                 };
             })
             .catch(err => {
+                console.log(err.response);
                 if (err.response.status == 401) {
                     localStorage.removeItem('auth_token');
                     localStorage.removeItem('user');

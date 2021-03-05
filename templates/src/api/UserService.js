@@ -1,21 +1,22 @@
 import Api from './index';
 
-export default class userService {
+class UserService {
     constructor() {
-        this.api = new Api();
-        this.path = '/api/users';
+        this.api = new Api('/users');
     }
 
     create(user) {
-        return this.api.post(this.path, user);
+        return this.api.post(user);
     }
     delete(id) {
-        return this.api.delete(this.path, {id});
+        return this.api.delete({id});
     }
     update(user) {
-        return this.api.put(this.path, user);
+        return this.api.put(user);
     }
     get(params) {
-        return this.api.get(this.path, params);
+        return this.api.get(params);
     }
 }
+
+export default new UserService();

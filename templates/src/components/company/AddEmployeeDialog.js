@@ -1,17 +1,17 @@
 import React, {useState } from 'react';
 import { Button, Dialog, DialogActions, DialogTitle, DialogContentText, DialogContent, Select, MenuItem, TextField } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import userService from '../../api/UserService';
 
 AddEmployeeDialog.propTypes = {
     open: PropTypes.bool,
     setOpen: PropTypes.func,
     setUsers: PropTypes.func,
     user: PropTypes.object,
-    setOpenModal: PropTypes.func,
-    userService: PropTypes.object
+    setOpenModal: PropTypes.func
 };
 
-export default function AddEmployeeDialog({ open, setOpen, setUsers, user, setOpenModal, userService }) {
+export default function AddEmployeeDialog({ open, setOpen, setUsers, user, setOpenModal }) {
     const [fullName, setFullName] = useState('');
     const [username, setUsername] = useState('');
     const [role, setRole] = useState(1);

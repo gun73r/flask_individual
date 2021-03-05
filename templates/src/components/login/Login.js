@@ -8,7 +8,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import AuthService from '../../api/AuthSevice';
+import authService from '../../api/AuthService';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,7 +36,6 @@ export default function Login() {
     const [username, setUsername] = useState('');
     const [error, setError] = useState(false);
 
-    const authService = new AuthService();
     const handleSubmit = (event) => {
         event.preventDefault();
         authService.login({username})

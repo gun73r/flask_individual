@@ -1,15 +1,16 @@
 import Api from './index';
 
-export default class CompanyService {
+class CompanyService {
     constructor() {
-        this.api = new Api();
-        this.path = '/api/companies';
+        this.api = new Api('/companies');
     }
 
     create(company) {
-        return this.api.post(this.path, company);
+        return this.api.post(company);
     }
     get(params) {
-        return this.api.get(this.path, params);
+        return this.api.get(params);
     }
 }
+
+export default new CompanyService();
