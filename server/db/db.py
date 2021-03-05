@@ -23,6 +23,7 @@ _AGREEMENT_COLLECTION_NAME = _COLLECTION_NAMES.get('agreement', 'agreement')
 _APPROVAL_COLLECTION_NAME = _COLLECTION_NAMES.get('approval', 'approval')
 _SIGNATURE_COLLECTION_NAME = _COLLECTION_NAMES.get('signature', 'signature')
 _INVITE_COLLECTION_NAME = _COLLECTION_NAMES.get('invite', 'invite')
+_MESSAGE_COllECTION_NAME = _COLLECTION_NAMES.get('message', 'message')
 
 
 _CLIENT = MongoClient(_CONNECTION_STRING)
@@ -45,3 +46,6 @@ SIGNATURES.create_index([('id', DESCENDING)])
 
 INVITES = _DB[_INVITE_COLLECTION_NAME]
 INVITES.create_index([('id', DESCENDING)])
+
+MESSAGES = _DB[_MESSAGE_COllECTION_NAME]
+MESSAGES.create_index([('id', DESCENDING)])

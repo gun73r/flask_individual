@@ -3,8 +3,9 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import IntEnum
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
 _LOGGER = logging.getLogger(__name__)
@@ -194,3 +195,40 @@ class Invite(Model):
         to_company_id = document['to_company_id']
         agreement_id = document['agreement_id']
         return cls(id=_id, to_company_id=to_company_id, agreement_id=agreement_id)
+
+
+@dataclass
+class Message(Model):
+    text: str
+    agreement_id: str
+    from_user_id: str
+    time: datetime = datetime.now()
+    to_user_id: Optional[str] = None
+    id: str = field(default_factory=_generate_uuid)
+
+    def to_document(self) -> Dict[str, Any]:
+        return {
+            'id': self.id,
+            'time': self.time,
+            'agreement_id': self.agreement_id,
+            'to_user_id': self.to_user_id,
+            'from_user_id': self.from_user_id,
+            'text': self.text,
+        }
+
+    @classmethod
+    def from_document(cls, document: Dict[str, Any]) -> Message:
+        _id = document['id']
+        agreement_id = document['agreement_id']
+        to_user_id = document['to_user_id']
+        time = document['time']
+        from_user_id = document['from_user_id']
+        text = document['text']
+        return cls(
+            id=_id,
+            to_user_id=to_user_id,
+            from_user_id=from_user_id,
+            text=text,
+            agreement_id=agreement_id,
+            time=time,
+        )

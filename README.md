@@ -79,6 +79,8 @@ collection_names:
   approval: approval
   signature: signature
   invite: invite
+  message: message
+
 ```
 
 ### .env

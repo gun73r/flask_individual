@@ -37,12 +37,12 @@ class CompanyApprovals:
         return self.head and self.lawyer and self.economist
 
 
-class InviteApi(MethodView):
-    @requires_any_param('company_id')
+class ApprovalApi(MethodView):
+    @requires_any_param('agreement_id')
     @check_authorization
     def get(self) -> Response:
         params = dict(request.args)
-        approvals = get_approvals_by_agreement_id(params['company_id'])
+        approvals = get_approvals_by_agreement_id(params['agreement_id'])
         approvals_json = _APPROVAL_SCHEMA.dumps(approvals, many=True)
         return Response(response=approvals_json, status=200)
 
