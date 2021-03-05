@@ -1,4 +1,8 @@
 repos:
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: '45886b75933e6460aa4883fc9b93452528d4384b'
+    hooks:
+      - id: isort
   - repo: https://github.com/ambv/black
     rev: stable
     hooks:
@@ -13,6 +17,7 @@ repos:
     hooks:
       - id: mypy
         args: [--disallow-untyped-defs, --ignore-missing-imports]
+        additional_dependencies: [pymongo-stubs]
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: '11ef33bbdec6342f4f59063e2ab94e827410467c'
     hooks:

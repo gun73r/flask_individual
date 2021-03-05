@@ -1,0 +1,9 @@
+db_name: Zesla
+collection_names:
+  company: company
+  user: user
+  agreement: agreement
+  approval: approval
+  signature: signature
+  invite: invite
+  message: message

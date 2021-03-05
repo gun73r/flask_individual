@@ -1,0 +1,96 @@
+from typing import Any, Dict
+
+from marshmallow import Schema, post_dump, post_load
+
+from .models import (
+    Agreement,
+    AgreementStatus,
+    Approval,
+    Company,
+    Invite,
+    Message,
+    Role,
+    Signature,
+    User,
+)
+
+
+class AgreementSchema(Schema):
+    class Meta:
+        fields = ('id', 'name', 'operations', 'status', 'company_ids')
+
+    @post_dump
+    def make_dict(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        data['status'] = int(data['status'])
+        return data
+
+    @post_load
+    def make_agreement(self, data: Dict[str, Any], **kwargs: Any) -> Agreement:
+        try:
+            data['status'] = AgreementStatus(data['status'])
+        except KeyError:
+            pass
+        return Agreement(**data)
+
+
+class UserSchema(Schema):
+    class Meta:
+        fields = ('id', 'username', 'full_name', 'role', 'company_id')
+
+    @post_dump
+    def make_dict(self, data: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        data['role'] = int(data['role'])
+        return data
+
+    @post_load
+    def make_agreement(self, data: Dict[str, Any], **kwargs: Any) -> User:
+        try:
+            data['role'] = Role(data['role'])
+        except KeyError:
+            pass
+        return User(**data)
+
+
+class InviteSchema(Schema):
+    class Meta:
+        fields = ('id', 'to_company_id', 'agreement_id')
+
+    @post_load
+    def make_agreement(self, data: Dict[str, Any], **kwargs: Any) -> Invite:
+        return Invite(**data)
+
+
+class CompanySchema(Schema):
+    class Meta:
+        fields = ('id', 'name')
+
+    @post_load
+    def make_company(self, data: Dict[str, Any], **kwargs: Any) -> Company:
+        return Company(**data)
+
+
+class ApprovalSchema(Schema):
+    class Meta:
+        fields = ('id', 'user_id', 'agreement_id')
+
+    @post_load
+    def make_approval(self, data: Dict[str, Any], **kwargs: Any) -> Approval:
+        return Approval(**data)
+
+
+class SignatureSchema(Schema):
+    class Meta:
+        fields = ('id', 'head_id', 'agreement_id')
+
+    @post_load
+    def make_signature(self, data: Dict[str, Any], **kwargs: Any) -> Signature:
+        return Signature(**data)
+
+
+class MessageSchema(Schema):
+    class Meta:
+        fields = ('id', 'to_user_id', 'from_user_id', 'text')
+
+    @post_load
+    def make_message(self, data: Dict[str, Any], **kwargs: Any) -> Message:
+        return Message(**data)
