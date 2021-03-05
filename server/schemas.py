@@ -8,6 +8,7 @@ from .models import (
     Approval,
     Company,
     Invite,
+    Message,
     Role,
     Signature,
     User,
@@ -82,5 +83,14 @@ class SignatureSchema(Schema):
         fields = ('id', 'head_id', 'agreement_id')
 
     @post_load
-    def make_approval(self, data: Dict[str, Any], **kwargs: Any) -> Signature:
+    def make_signature(self, data: Dict[str, Any], **kwargs: Any) -> Signature:
         return Signature(**data)
+
+
+class MessageSchema(Schema):
+    class Meta:
+        fields = ('id', 'to_user_id', 'from_user_id', 'text')
+
+    @post_load
+    def make_message(self, data: Dict[str, Any], **kwargs: Any) -> Message:
+        return Message(**data)

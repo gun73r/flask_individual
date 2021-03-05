@@ -1,5 +1,6 @@
 from .agreement import (
     add_company_to_agreement,
+    add_operations_to_agreement,
     count_agreement_companies,
     create_agreement,
     delete_agreement,
@@ -20,6 +21,7 @@ from .invite import (
     get_invites_by_agreement_id,
     get_invites_by_company_id,
 )
+from .message import create_message, get_messages_by_agreement_id
 from .signature import (
     create_signature,
     delete_signature,
@@ -40,6 +42,7 @@ __all__ = [
     'delete_agreement',
     'get_agreement_by_id',
     'get_agreements_by_company_id',
+    'add_operations_to_agreement',
     'update_agreement',
     'count_agreement_companies',
     'add_company_to_agreement',
@@ -68,4 +71,7 @@ __all__ = [
     'get_signatures_by_agreement_id',
     'create_signature',
     'delete_signature',
+    # Message DB API
+    'create_message',
+    'get_messages_by_agreement_id',
 ]

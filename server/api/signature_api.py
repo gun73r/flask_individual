@@ -17,14 +17,14 @@ from .utils import check_authorization, requires_any_param
 _SIGNATURE_SCHEMA = SignatureSchema()
 
 
-class InviteApi(MethodView):
-    @requires_any_param('company_id')
+class SignatureApi(MethodView):
+    @requires_any_param('agreement_id')
     @check_authorization
     def get(self) -> Response:
         params = dict(request.args)
-        approvals = get_signatures_by_agreement_id(params['company_id'])
-        approvals_json = _SIGNATURE_SCHEMA.dumps(approvals, many=True)
-        return Response(response=approvals_json, status=200)
+        signatures = get_signatures_by_agreement_id(params['agreement_id'])
+        signatures_json = _SIGNATURE_SCHEMA.dumps(signatures, many=True)
+        return Response(response=signatures_json, status=200)
 
     @check_authorization
     def post(self) -> Response:
