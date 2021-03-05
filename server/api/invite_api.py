@@ -8,8 +8,11 @@ from ..db import (
     count_agreement_companies,
     create_invite,
     delete_invite,
+    get_agreement_by_id,
     get_invites_by_company_id,
+    update_agreement,
 )
+from ..models import AgreementStatus
 from ..schemas import InviteSchema
 from .utils import check_authorization, requires_any_param
 
@@ -32,8 +35,8 @@ class InviteApi(MethodView):
         if count_agreement_companies(invite.agreement_id) >= 2:
             return Response(status=403)
         create_invite(invite)
-        agreement_json = _INVITE_SCHEMA.dumps(invite)
-        return Response(response=agreement_json, status=201)
+        invite_json = _INVITE_SCHEMA.dumps(invite)
+        return Response(response=invite_json, status=201)
 
     @check_authorization
     def delete(self) -> Response:
@@ -43,7 +46,10 @@ class InviteApi(MethodView):
         invite = _INVITE_SCHEMA.loads(json_data['invite'])
         if json_data['answer'] == 'accept':
             company_id = invite.to_company_id
-            agreement_id = invite.agreement_id
-            add_company_to_agreement(agreement_id, company_id)
+            agreement = get_agreement_by_id(invite.agreement_id)
+            if agreement.status == AgreementStatus.IN_PROCESS:
+                agreement.status = AgreementStatus.HARMONIZATION
+                update_agreement(agreement)
+            add_company_to_agreement(agreement.id, company_id)
         result = delete_invite(invite.id)
         return Response(status=200) if result else Response(status=404)

@@ -2,7 +2,16 @@ from typing import Any, Dict
 
 from marshmallow import Schema, post_dump, post_load
 
-from .models import Agreement, AgreementStatus, Company, Invite, Role, User
+from .models import (
+    Agreement,
+    AgreementStatus,
+    Approval,
+    Company,
+    Invite,
+    Role,
+    Signature,
+    User,
+)
 
 
 class AgreementSchema(Schema):
@@ -57,3 +66,21 @@ class CompanySchema(Schema):
     @post_load
     def make_company(self, data: Dict[str, Any], **kwargs: Any) -> Company:
         return Company(**data)
+
+
+class ApprovalSchema(Schema):
+    class Meta:
+        fields = ('id', 'user_id', 'agreement_id')
+
+    @post_load
+    def make_approval(self, data: Dict[str, Any], **kwargs: Any) -> Approval:
+        return Approval(**data)
+
+
+class SignatureSchema(Schema):
+    class Meta:
+        fields = ('id', 'head_id', 'agreement_id')
+
+    @post_load
+    def make_approval(self, data: Dict[str, Any], **kwargs: Any) -> Signature:
+        return Signature(**data)

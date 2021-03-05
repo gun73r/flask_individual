@@ -38,7 +38,7 @@ def add_company_to_agreement(agreement_id: str, company_id: str) -> bool:
     if not _agreement_exists(agreement_id):
         return False
     AGREEMENTS.find_one_and_update(
-        {'id': agreement_id}, {'company_ids': {'$push': company_id}}
+        {'id': agreement_id}, {'$push': {'company_ids': company_id}}
     )
     return True
 
